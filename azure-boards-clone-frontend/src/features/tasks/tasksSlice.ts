@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { fetchTasks } from '../../api/taskApi';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { fetchTasksAsync } from './tasksAPI';
 import { Task } from '../../types/types';
 
 interface TasksState {
@@ -12,16 +12,10 @@ const initialState: TasksState = {
   status: 'idle',
 };
 
-export const fetchTasksAsync = createAsyncThunk('tasks/fetchTasks', async () => {
-  const response = await fetchTasks();
-  return response;
-});
-
 const tasksSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
-    // Define the addTask action
     addTask: (state, action: PayloadAction<Task>) => {
       state.tasks.push(action.payload);
     },
@@ -31,7 +25,7 @@ const tasksSlice = createSlice({
       .addCase(fetchTasksAsync.pending, state => {
         state.status = 'loading';
       })
-      .addCase(fetchTasksAsync.fulfilled, (state, action) => {
+      .addCase(fetchTasksAsync.fulfilled, (state, action: PayloadAction<Task[]>) => {
         state.status = 'idle';
         state.tasks = action.payload;
       })
@@ -41,7 +35,7 @@ const tasksSlice = createSlice({
   },
 });
 
-// Export the addTask action
 export const { addTask } = tasksSlice.actions;
 
+// Default export of the reducer
 export default tasksSlice.reducer;

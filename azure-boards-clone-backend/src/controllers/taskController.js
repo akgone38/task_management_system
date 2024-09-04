@@ -7,6 +7,7 @@ export const getTasks = async (req, res) => {
     const tasks = await Task.find({});
     res.json(tasks);
   } catch (error) {
+    console.error('Error fetching tasks:', error);
     res.status(500).json({ message: 'Error fetching tasks: ' + error.message });
   }
 };

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Task } from '../types/types'; // Import Task type
+import { Task } from '../types/types';
 import { useDispatch } from 'react-redux';
-import { addTask } from '../features/tasks/tasksSlice';
+import { createTaskAsync } from '../features/tasks/tasksAPI';
+import { AppDispatch } from '../app/store'; // Import AppDispatch type
 
 interface CreateTaskModalProps {
   onClose: () => void;
-  users: Array<{ id: string; name: string }>; // Assuming users have id and name
+  users: Array<{ id: string; name: string }>;
 }
 
 const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ onClose, users }) => {
@@ -13,20 +14,20 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ onClose, users }) => 
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState<'High' | 'Medium' | 'Low'>('Medium');
   const [assignedTo, setAssignedTo] = useState('');
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>(); // Use the correctly typed dispatch
 
   const handleSave = () => {
-    const newTask: Task = {
-      id: Date.now().toString(), // Use a unique ID generator like `Date.now()`
+    const newTask: Omit<Task, 'id'> = {
       title,
       description,
       priority,
       assignedTo,
       createdOn: new Date().toISOString(),
-      createdBy: 'currentUserId', // Replace with the actual user ID
+      createdBy: 'currentUserId',
+      _id: ''
     };
 
-    dispatch(addTask(newTask)); // Dispatch the addTask action
+    dispatch(createTaskAsync(newTask));
     onClose();
   };
 
@@ -38,7 +39,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ onClose, users }) => 
         <input
           type="text"
           value={title}
-          onChange={(e) => setTitle(e.target.value)} // This ensures `setTitle` is used
+          onChange={(e) => setTitle(e.target.value)}
         />
       </label>
       <label>

@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchUsers } from '../../api/taskApi';
+import { createSlice } from '@reduxjs/toolkit';
+import { fetchUsersAsync } from './usersAPI';
 import { User } from '../../types/types';
 
 interface UsersState {
@@ -11,11 +11,6 @@ const initialState: UsersState = {
   users: [],
   status: 'idle',
 };
-
-export const fetchUsersAsync = createAsyncThunk('users/fetchUsers', async () => {
-  const response = await fetchUsers();
-  return response;
-});
 
 const usersSlice = createSlice({
   name: 'users',
