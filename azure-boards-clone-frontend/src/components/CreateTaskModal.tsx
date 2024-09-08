@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { Task } from '../types/types';
 import { useDispatch } from 'react-redux';
 import { createTaskAsync } from '../features/tasks/tasksAPI';
-import { AppDispatch } from '../app/store'; // Import AppDispatch type
+import { AppDispatch } from '../app/store';
 
 interface CreateTaskModalProps {
   onClose: () => void;
-  users: Array<{ id: string; name: string }>;
+  users: Array<{ _id: string; username: string }>;
 }
 
 const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ onClose, users }) => {
@@ -14,18 +14,28 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ onClose, users }) => 
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState<'High' | 'Medium' | 'Low'>('Medium');
   const [assignedTo, setAssignedTo] = useState('');
-  const dispatch = useDispatch<AppDispatch>(); // Use the correctly typed dispatch
+  const [status, setStatus] = useState('');
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleSave = () => {
+    if (!assignedTo) {
+      alert('Please assign the task to a user.');
+      return;
+    }
+
     const newTask: Omit<Task, 'id'> = {
       title,
       description,
       priority,
+      status,
       assignedTo,
       createdOn: new Date().toISOString(),
-      createdBy: 'currentUserId',
-      _id: ''
+      createdBy: 'currentUserId', // Replace with actual current user's ID
+      _id: '', // Leave _id empty
+      taskNumber: undefined, // Remove taskNumber since it will be handled by backend
     };
+
+    console.log('New Task:', newTask);
 
     dispatch(createTaskAsync(newTask));
     onClose();
@@ -61,14 +71,27 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ onClose, users }) => 
         </select>
       </label>
       <label>
+        Status:
+        <select
+          value={status}
+          onChange={(e) => setStatus(e.target.value as 'Active' | 'In Progress' | 'Completed' | 'Hold')}
+        >
+          <option value="Active">Active</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
+          <option value="Hold">Hold</option>
+        </select>
+      </label>
+      <label>
         Assign to:
         <select
           value={assignedTo}
           onChange={(e) => setAssignedTo(e.target.value)}
         >
+          <option value="">Select a user</option>
           {users.map((user) => (
-            <option key={user.id} value={user.id}>
-              {user.name}
+            <option key={user._id} value={user._id}>
+              {user.username}
             </option>
           ))}
         </select>

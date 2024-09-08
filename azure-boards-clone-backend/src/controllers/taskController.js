@@ -1,6 +1,7 @@
 import { Task } from '../models/taskModel.js';
 import { User } from '../models/userModel.js';
 
+
 // Get all tasks
 export const getTasks = async (req, res) => {
   try {
@@ -12,28 +13,31 @@ export const getTasks = async (req, res) => {
   }
 };
 
-// Create a new task
+// Get all tasks
 export const createTask = async (req, res) => {
-  const { title, description, priority, assignedToEmail } = req.body;
+  const { title, description, priority, assignedTo, status } = req.body;
 
   // Validate the request body
   if (!title || !description || !priority) {
     return res.status(400).json({ message: 'Title, description, and priority are required' });
   }
 
-  try {
-    // For simplicity, we are hardcoding the current user ID
-    const createdBy = "66d59ad606d30d27e1730693"; // Replace this with your actual current user ID retrieval logic
+  // Ensure status is one of the allowed values or use default
+  const validStatuses = ['Active', 'In Progress', 'Completed', 'Hold', 'New'];
+  const validatedStatus = validStatuses.includes(status) ? status : 'New';
 
-    // If assignedToEmail is provided, find the corresponding user
-    let assignedTo = null;
-    if (assignedToEmail) {
-      const user = await User.findOne({ email: assignedToEmail });
-      if (user) {
-        assignedTo = user._id;
-      } else {
+  try {
+    // Hardcoded current user ID for simplicity
+    const createdBy = "66d59ad606d30d27e1730693"; // Replace this with actual current user ID retrieval logic
+
+    // Validate the assignedTo user if provided
+    let assignedUser = null;
+    if (assignedTo) {
+      const user = await User.findById(assignedTo);
+      if (!user) {
         return res.status(400).json({ message: 'Assigned user not found' });
       }
+      assignedUser = user._id;
     }
 
     // Create the task
@@ -41,8 +45,9 @@ export const createTask = async (req, res) => {
       title,
       description,
       priority,
-      assignedTo,
+      assignedTo: assignedUser, // Use the assigned user's ID
       createdBy,
+      status: validatedStatus // Use validated status
     });
 
     // Save the task to the database
@@ -53,3 +58,4 @@ export const createTask = async (req, res) => {
     res.status(500).json({ message: 'Error creating task: ' + error.message });
   }
 };
+

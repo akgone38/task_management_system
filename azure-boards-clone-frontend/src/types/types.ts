@@ -1,12 +1,3 @@
-// export interface Task {
-//   id: string;
-//   title: string;
-//   description: string;
-//   priority: 'High' | 'Medium' | 'Low';
-//   createdBy: string;
-//   assignedTo: string;
-//   createdOn: string;
-// }
 export interface Task {
   _id: string;  // Aligns with backend's _id field
   title: string;
@@ -14,13 +5,22 @@ export interface Task {
   priority: 'High' | 'Medium' | 'Low';
   createdBy: string;
   assignedTo: string;
+  status:string;
+  taskNumber?:number;
   createdOn: string;
   createdAt?: string;  // Include these if you plan to use them
   updatedAt?: string;  // Include these if you plan to use them
 }
 
-
+// User type definition
 export interface User {
-  id: string;
-  name: string;
+  _id: string;
+  username: string;
+  email: string;
+  role: 'Admin' | 'User';  // Different roles the user can have
+  avatarUrl?: string;      // Optional field for avatar image
 }
+// export interface User {
+//   _id: string;
+//   username: string;
+// }
