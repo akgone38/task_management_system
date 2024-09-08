@@ -1,16 +1,10 @@
-const API_BASE_URL = 'http://localhost:5001/api'; // Change to your backend URL
 import axios from 'axios';
 import { Task } from '../types/types';
 
-// API to fetch tasks
-// export const fetchTasks = async (): Promise<Task[]> => {
-//   const response = await axios.get('/api/tasks'); // Adjust the URL as necessary
-//   return response.data;
-// };
-// export const fetchTasks = async (): Promise<Task[]> => {
-//   const response = await axios.get(`${API_BASE_URL}/tasks`);
-//   return response.data;
-// };
+// Fetch the API URL from environment variables
+// const API_BASE_URL = 'http://localhost:5001/api';
+const API_BASE_URL = 'https://tmsbackend.vercel.app/api'
+
 export const fetchTasks = async (): Promise<Task[]> => {
   try {
     const response = await axios.get(`${API_BASE_URL}/tasks`);
@@ -21,12 +15,12 @@ export const fetchTasks = async (): Promise<Task[]> => {
   }
 };
 
-// API to create a new task
-// export const createTask = async (task: Omit<Task, 'id'>): Promise<Task> => {
-//   const response = await axios.post('/api/tasks', task); // Adjust the URL as necessary
-//   return response.data;
-// };
 export const createTask = async (task: Omit<Task, 'id'>): Promise<Task> => {
-  const response = await axios.post(`${API_BASE_URL}/tasks`, task); // Adjust the URL as necessary
-  return response.data;
+  try {
+    const response = await axios.post(`${API_BASE_URL}/tasks`, task); // Adjust the URL as necessary
+    return response.data;
+  } catch (error) {
+    console.error('Error creating task:', error);
+    throw error;
+  }
 };
