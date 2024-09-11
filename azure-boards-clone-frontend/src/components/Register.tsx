@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../features/users/usersAPI'; 
 import { useNavigate } from 'react-router-dom';
 import { AppDispatch, RootState } from '../app/store'; 
-import { TextField, Button, Typography, Container, Box } from '@mui/material';
+import { TextField, Button, Typography, Container } from '@mui/material';
 
 interface RegisterFormData {
   username: string;

@@ -4,7 +4,6 @@ import { RootState, AppDispatch } from '../app/store';
 import CreateTaskModal from './CreateTaskModal';
 import { Grid, Typography, Button, Box, Paper } from '@mui/material';
 import TaskCard from './TaskCard';
-import TaskDetails from './TaskDetails';
 import FilterBar from './FilterBar';
 import { fetchUserDetails, fetchAllUsers } from '../features/users/usersAPI'; // Updated to fetch all users
 import { Task } from '../types/types';
