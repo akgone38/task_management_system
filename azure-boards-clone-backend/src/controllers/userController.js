@@ -1,43 +1,137 @@
 import { User } from '../models/userModel.js';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
-// Get all users
-export const getUsers = async (req, res) => {
+
+// Register User
+export const registerUser = async (req, res) => {
+  const { username, email, password } = req.body;
   try {
-    const users = await User.find({});
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching users: ' + error.message });
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ 
+        message: 'User already exists', 
+        statusCode: 400,
+        error: 'Bad Request' 
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+    });
+
+    await newUser.save();
+    console.log('User registered successfully');
+    
+    res.status(200).json({ message: 'Registration successful' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({
+      message: 'Server error',
+      statusCode: 500,
+      error: 'Internal Server Error'
+    });
   }
 };
 
-// Create a new user
-export const createUser = async (req, res) => {
-  const { username, email, password } = req.body;
-
-  // Validate the request body
-  if (!username || !email || !password) {
-    return res.status(400).json({ message: 'Username, email, and password are required' });
-  }
-
+// Login User
+export const loginUser = async (req, res) => {
+  const { email, password } = req.body;
   try {
-    // Check if the email is already in use
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: 'Email is already in use' });
+    let user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ 
+        message: 'Invalid Credentials', 
+        statusCode: 400,
+        error: 'Bad Request' 
+      });
     }
 
-    // Create the new user
-    const user = new User({
-      username,
-      email,
-      password,
-    });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ 
+        message: 'Invalid Credentials', 
+        statusCode: 400,
+        error: 'Bad Request' 
+      });
+    }
 
-    // Save the user to the database
-    const createdUser = await user.save();
-    res.status(201).json(createdUser);
-  } catch (error) {
-    console.error('Error creating user:', error); // Log the error
-    res.status(500).json({ message: 'Error creating user: ' + error.message });
+    const payload = {
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      },
+    };
+
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' },
+      (err, token) => {
+        if (err) throw err;
+        res.json({ user: payload.user, token });
+      }
+    );
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({
+      message: 'Server error',
+      statusCode: 500,
+      error: 'Internal Server Error'
+    });
+  }
+};
+
+// Get User
+export const getUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ 
+        message: 'User not found', 
+        statusCode: 404, 
+        error: 'Not Found' 
+      });
+    }
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({
+      message: 'Server error',
+      statusCode: 500,
+      error: 'Internal Server Error'
+    });
+  }
+};
+
+// Get All Users
+export const getAllUsers = async (req, res) => {
+  try {
+    // Fetch all users excluding password field
+    const users = await User.find().select('-password');
+
+    // Check if any users exist
+    if (!users) {
+      return res.status(404).json({
+        message: 'No users found',
+        statusCode: 404,
+        error: 'Not Found',
+      });
+    }
+
+    // Respond with all users
+    res.status(200).json(users);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({
+      message: 'Server error',
+      statusCode: 500,
+      error: 'Internal Server Error',
+    });
   }
 };

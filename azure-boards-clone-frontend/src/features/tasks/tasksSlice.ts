@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchTasksAsync } from './tasksAPI';
+import { fetchTasksAsync, createTaskAsync } from './tasksAPI';
 import { Task } from '../../types/types';
 
 interface TasksState {
@@ -31,11 +31,20 @@ const tasksSlice = createSlice({
       })
       .addCase(fetchTasksAsync.rejected, state => {
         state.status = 'failed';
+      })
+      .addCase(createTaskAsync.pending, state => {
+        state.status = 'loading';
+      })
+      .addCase(createTaskAsync.fulfilled, (state, action: PayloadAction<Task>) => {
+        state.status = 'idle';
+        state.tasks.push(action.payload);
+      })
+      .addCase(createTaskAsync.rejected, state => {
+        state.status = 'failed';
       });
   },
 });
 
 export const { addTask } = tasksSlice.actions;
 
-// Default export of the reducer
 export default tasksSlice.reducer;

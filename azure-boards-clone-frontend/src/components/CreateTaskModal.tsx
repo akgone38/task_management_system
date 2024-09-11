@@ -14,7 +14,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ onClose, users }) => 
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState<'High' | 'Medium' | 'Low'>('Medium');
   const [assignedTo, setAssignedTo] = useState('');
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState<string>(''); // Default status is blank
   const dispatch = useDispatch<AppDispatch>();
 
   const handleSave = () => {
@@ -27,7 +27,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ onClose, users }) => 
       title,
       description,
       priority,
-      status,
+      status, // Send blank status if no status is selected
       assignedTo,
       createdOn: new Date().toISOString(),
       createdBy: 'currentUserId', // Replace with actual current user's ID
@@ -35,7 +35,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ onClose, users }) => 
       taskNumber: undefined, // Remove taskNumber since it will be handled by backend
     };
 
-    console.log('New Task:', newTask);
+    console.log('New Task:', newTask); // Debugging: Check the task object
 
     dispatch(createTaskAsync(newTask));
     onClose();
@@ -74,8 +74,9 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ onClose, users }) => 
         Status:
         <select
           value={status}
-          onChange={(e) => setStatus(e.target.value as 'Active' | 'In Progress' | 'Completed' | 'Hold')}
+          onChange={(e) => setStatus(e.target.value)}
         >
+          <option value="">Select a status</option> {/* This option represents blank status */}
           <option value="Active">Active</option>
           <option value="In Progress">In Progress</option>
           <option value="Completed">Completed</option>

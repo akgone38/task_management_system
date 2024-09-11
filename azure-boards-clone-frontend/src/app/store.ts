@@ -1,10 +1,10 @@
+// src/app/store.ts
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 import tasksReducer from '../features/tasks/tasksSlice';
 import usersReducer from '../features/users/usersSlice';
-import { fetchTasksAsync } from '../features/tasks/tasksAPI'; // Import the async thunk
-import { fetchUsersAsync } from '../features/users/usersAPI'; // Import the async thunk
 
+// Configure the Redux store
 export const store = configureStore({
   reducer: {
     tasks: tasksReducer,
@@ -12,12 +12,9 @@ export const store = configureStore({
   },
 });
 
-// Fetch data when the store is created (still valid)
-store.dispatch(fetchTasksAsync());
-store.dispatch(fetchUsersAsync());
-
+// Define RootState and AppDispatch types
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
-// Typed dispatch example (use this in your components)
+// Typed dispatch hook
 export const useAppDispatch: () => AppDispatch = () => useDispatch<AppDispatch>();

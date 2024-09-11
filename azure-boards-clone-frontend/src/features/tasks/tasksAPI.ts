@@ -1,3 +1,4 @@
+// tasksAPI.ts
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Task } from '../../types/types';
 import { fetchTasks, createTask } from '../../api/taskApi';
@@ -11,8 +12,13 @@ export const fetchTasksAsync = createAsyncThunk<Task[]>(
   }
 );
 
-// Thunk for creating a new task
-export const createTaskAsync = createAsyncThunk('tasks/createTask', async (task: Omit<Task, 'id'>) => {
-  const newTask = await createTask(task);
-  return newTask;
-});
+// Thunk for creating a new task and refetching tasks
+export const createTaskAsync = createAsyncThunk<Task, Omit<Task, 'id'>>(
+  'tasks/createTask',
+  async (task, { dispatch }) => {
+    const newTask = await createTask(task);
+    // Refetch the task list after creating a new task
+    dispatch(fetchTasksAsync());
+    return newTask;
+  }
+);

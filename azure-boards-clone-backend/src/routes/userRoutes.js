@@ -1,11 +1,19 @@
 import express from 'express';
-import { getUsers } from '../controllers/userController.js';
-import { createUser } from '../controllers/userController.js';
+import { registerUser, loginUser, getUser, getAllUsers } from '../controllers/userController.js';
+import auth from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-// Route to get all users
-router.get('/users', getUsers);
-router.post('/users', createUser);  
+// Register route
+router.post('/register', registerUser);
+
+// Login route
+router.post('/login', loginUser);
+
+// Get current logged-in user route
+router.get('/user', auth, getUser);
+
+// Get all users route (requires authentication)
+router.get('/users', auth, getAllUsers);  // New route to get all users
 
 export default router;

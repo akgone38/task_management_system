@@ -13,7 +13,6 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({ task }) => {
       <p>Priority: {task.priority}</p>
       <p>Assigned to: {task.assignedTo}</p>
       <p>Created on: {new Date(task.createdOn).toLocaleDateString()}</p>
-      {/* Add comment section here */}
     </div>
   );
 };
