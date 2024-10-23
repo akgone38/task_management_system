@@ -6,7 +6,7 @@ import { AppDispatch } from '../app/store';
 
 interface CreateTaskModalProps {
   onClose: () => void;
-  users: Array<{ _id: string; username: string }>;
+  users: Array<{ _id: string; username: string; email:string }>;
 }
 
 const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ onClose, users }) => {
@@ -92,7 +92,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ onClose, users }) => 
           <option value="">Select a user</option>
           {users.map((user) => (
             <option key={user._id} value={user._id}>
-              {user.username}
+              {user.email}
             </option>
           ))}
         </select>

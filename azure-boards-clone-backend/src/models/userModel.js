@@ -18,7 +18,7 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: function() {
-        return !this.googleId; // Password is required only if user is not using Google OAuth
+        return this.authMethod === 'email'; // Password is required only if user is not using Google OAuth
     },
     minlength: 6,
     select: false // Do not return password in queries by default

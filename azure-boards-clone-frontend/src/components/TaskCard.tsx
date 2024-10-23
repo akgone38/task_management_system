@@ -77,7 +77,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, users, onClick, index }) => {
         ) : (
           <Avatar><PersonIcon /></Avatar>
         )}
-        <Typography>{assignedUser ? assignedUser.username : 'Unassigned'}</Typography>
+        <Typography>{assignedUser ? assignedUser.email : 'Unassigned'}</Typography>
       </Grid>
     </Grid>
   );

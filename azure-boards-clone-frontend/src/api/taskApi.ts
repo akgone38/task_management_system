@@ -2,8 +2,8 @@ import axios from 'axios';
 import { Task } from '../types/types';
 
 // Fetch the API URL from environment variables
-const API_BASE_URL = 'http://localhost:8080/api';
-// const API_BASE_URL = 'https://tmsbackend.vercel.app/api'
+// const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = 'https://tmsbackend.vercel.app/api';
 
 // Create an instance of axios with default configuration
 const axiosInstance = axios.create({

@@ -42,7 +42,7 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select('+password');
     if (!user) {
       return res.status(400).json({
         message: 'Invalid credentials',
@@ -59,7 +59,8 @@ export const loginUser = async (req, res) => {
         error: 'Bad Request',
       });
     }
-
+    console.log('User object:', user);
+    console.log('User password:', user.password);
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({
@@ -147,12 +148,24 @@ export const handleOAuthLogin = async (profile, done) => {
     // console.log("user:-")
     if (!user) {
       // If the user doesn't exist, create a new user with authMethod set to 'google'
+      // If the user doesn't exist, create a new user with authMethod set to 'google'
+      let username = profile.displayName;
+      const existingUserWithUsername = await User.findOne({ username });
+      
+      if (existingUserWithUsername) {
+        // Append a suffix to the username if it already exists
+        username += `_${Math.floor(Math.random() * 1000)}`;
+      }
+      
       user = new User({
-        username: profile.displayName,
+        username,
         email: profile.emails[0].value,
         googleID: profile.id,
         authMethod: 'google', // Set auth method to 'google'
+        // password: undefined, // Add an empty password to bypass validation
       });
+      // Disable validation for this specific field
+      // user.password.isRequired = false; { validateModifiedOnly: true }
       await user.save();
     }
 
