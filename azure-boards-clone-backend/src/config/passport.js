@@ -9,7 +9,8 @@ dotenv.config();
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: 'https://tmsbackend.vercel.app/api/auth/google/callback', // Add full backend URL
+  callbackURL: 'https://tmsbackend.vercel.app/api/auth/google/callback', // Add backend URL+
+  // callbackURL: 'http://localhost:8080/api/auth/google/callback', // Add backend URL+
 }, (accessToken, refreshToken, profile, done) => {
   handleOAuthLogin(profile, done);
 }));
