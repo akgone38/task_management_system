@@ -112,6 +112,27 @@ export const getUser = async (req, res) => {
     });
   }
 };
+// Get User by ID
+export const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('-password');
+    if (!user) {
+      return res.status(404).json({
+        message: 'User not found',
+        statusCode: 404,
+        error: 'Not Found',
+      });
+    }
+    res.status(200).json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: 'Server error',
+      statusCode: 500,
+      error: 'Internal Server Error',
+    });
+  }
+};
 
 // Get All Users
 export const getAllUsers = async (req, res) => {

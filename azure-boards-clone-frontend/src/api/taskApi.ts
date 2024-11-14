@@ -1,12 +1,13 @@
 import axios from 'axios';
 import { Task } from '../types/types';
 
+//URL_UPDATE
 // Fetch the API URL from environment variables
 // const API_BASE_URL = 'http://localhost:8080/api'; //backend url
 const API_BASE_URL = 'https://tmsbackend.vercel.app/api';
 
 // Create an instance of axios with default configuration
-const axiosInstance = axios.create({
+export const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
 });
 
@@ -45,5 +46,29 @@ export const createTask = async (task: Omit<Task, 'id'>): Promise<Task> => {
   } catch (error) {
     console.error('Error creating task:', error);
     throw error;
+  }
+};
+
+export const getTaskDetails = async (taskNumber: string) => {
+  const response = await axiosInstance.get(`tasks/${taskNumber}`);
+  return response.data;
+};
+
+export const addComment = async (taskNumber: string, commentData: { text: string }) => {
+  const response = await axiosInstance.post(`tasks/${taskNumber}/comments`, commentData);
+  return response.data;
+};
+
+export const editComment = async (taskNumber: string, commentId: string, commentData: { text: string }) => {
+  const response = await axiosInstance.put(`tasks/${taskNumber}/comments/${commentId}`, commentData);
+  return response.data;
+};
+export const updateTaskDetails = async (taskNumber: string, updatedFields: any) => {
+  try {
+      const response = await axiosInstance.patch(`tasks/${taskNumber}`, updatedFields);
+      return response.data;
+  } catch (error) {
+      console.error("Error updating task details:", error);
+      throw error;
   }
 };

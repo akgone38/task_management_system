@@ -36,7 +36,7 @@ app.use('/api/users', userRoutes);  // Updated path
 app.use('/api/auth', authRoutes);    // Auth routes for authentication
 
 app.use(cors({
-  origin: process.env.CLIENT_URL, // Allow requests from your frontend
+  origin: [process.env.CLIENT_URL, 'http://localhost:5173'], // Allow requests from your frontend
   credentials: true, // Allow credentials to be sent
 }));
 
