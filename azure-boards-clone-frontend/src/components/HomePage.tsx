@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../app/store';
 import CreateTaskModal from './CreateTaskModal';
-import { Grid, Typography, Button, Box, Paper } from '@mui/material';
+import { Grid, Typography, Button, Box } from '@mui/material';
 import TaskCard from './TaskCard';
 import FilterBar from './FilterBar';
 import { fetchUserDetails, fetchAllUsers } from '../features/users/usersAPI';
