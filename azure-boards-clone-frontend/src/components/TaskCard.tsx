@@ -54,12 +54,12 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, users, onClick, index }) => {
       <Grid item xs={1}>
         <Typography noWrap>{task.taskNumber}</Typography>
       </Grid>
-      <Grid item xs={2}>
+      <Grid item xs={5}>
         <Typography noWrap sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>{task.title}</Typography>
       </Grid>
-      <Grid item xs={3}>
+      {/* <Grid item xs={3}>
         <Typography noWrap sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>{task.description}</Typography>
-      </Grid>
+      </Grid> */}
       <Grid item xs={2}>
         <Box display="flex" alignItems="center">
           {statusInfo.icon}

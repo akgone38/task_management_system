@@ -1,6 +1,6 @@
 // usersApi.ts
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axiosInstance from '../../api/userApi';
+import {axiosInstance} from '../../api/taskApi';
 import { User } from '../../types/types';
 
 interface RegisterUserData {

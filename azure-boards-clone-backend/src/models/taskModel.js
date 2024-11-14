@@ -17,10 +17,10 @@ const generateTaskNumber = async () => {
 };
 
 // Define Comment Schema
-const commentSchema = new Schema({
-  text: { type: String, required: true },
-  author: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now }
+const commentSchema = new mongoose.Schema({
+  text: String,
+  date: { type: Date, default: Date.now },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 });
 
 // Define Task Schema
