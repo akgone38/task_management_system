@@ -6,6 +6,7 @@ import AppInitializer from './components/AppInitializer'; // Import the AppIniti
 import HomePage from './components/HomePage'; // Example component
 import Login from './components/Login'; // Example component
 import Register from './components/Register'; // Example component
+import TaskDetails from './components/TaskDetails'
 
 import { AppBar, Toolbar, Typography, Container, Box } from '@mui/material';
 
@@ -30,6 +31,7 @@ const App: React.FC = () => {
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/tasks/:taskNumber" element={<TaskDetails/>} />
             </Routes>
           </Container>
 

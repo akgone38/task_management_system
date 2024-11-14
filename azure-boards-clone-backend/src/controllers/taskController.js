@@ -15,10 +15,10 @@ export const getTasks = async (req, res) => {
 // Get task by taskNumber
 export const getTaskByTaskNumber = async (req, res) => {
   const { taskNumber } = req.params;
-
+  console.log("taskNumber:-",taskNumber);
   try {
     const task = await Task.findOne({ taskNumber }).populate('assignedTo', 'name').exec();
-    
+    console.log("task:-",task);
     if (!task) {
       return res.status(404).json({ message: 'Task not found' });
     }
@@ -109,5 +109,102 @@ export const addComment = async (req, res) => {
     res.status(201).json(task.comments);
   } catch (error) {
     res.status(500).json({ message: 'Error adding comment: ' + error.message });
+  }
+};
+
+// // Edit a comment
+// export const editComment = async (req, res) => {
+//   try {
+//       const task = await Task.findById(req.params.taskNumber);
+//       const comment = task.comments.id(req.params.commentId);
+//       comment.text = req.body.text;
+//       comment.date = Date.now();
+//       await task.save();
+//       res.status(200).json(task);
+//   } catch (err) {
+//       res.status(500).json({ error: 'Error editing comment' });
+//   }
+// };
+// Edit a comment by taskNumber and commentId
+export const editComment = async (req, res) => {
+  const { taskNumber, commentId } = req.params;
+  const { text } = req.body;
+
+  try {
+    // Find the task by taskNumber
+    const task = await Task.findOne({ taskNumber });
+    if (!task) {
+      return res.status(404).json({ error: 'Task not found' });
+    }
+
+    // Find the comment by ID within the task’s comments array
+    const comment = task.comments.id(commentId);
+    if (!comment) {
+      return res.status(404).json({ error: 'Comment not found' });
+    }
+
+    // Update the comment text and date
+    comment.text = text;
+    comment.date = Date.now();
+
+    // Save the updated task
+    await task.save();
+    res.status(200).json({ message: 'Comment updated successfully', task });
+  } catch (error) {
+    console.error('Error editing comment:', error);
+    res.status(500).json({ error: 'Error editing comment: ' + error.message });
+  }
+};
+
+// export const updateTaskDetails = async (req, res) => {
+//   const { taskNumber } = req.params;
+//   const { title, description, priority, status, assignedTo } = req.body;
+
+//   try {
+//     const task = await Task.findOne({ taskNumber });
+//     if (!task) {
+//       return res.status(404).json({ message: 'Task not found' });
+//     }
+
+//     // Update fields if provided in the request body
+//     if (title) task.title = title;
+//     if (description) task.description = description;
+//     if (priority) task.priority = priority;
+//     if (status) task.status = status;
+
+//     // Update the assigned user if provided
+//     if (assignedTo) {
+//       const user = await User.findById(assignedTo);
+//       if (!user) {
+//         return res.status(400).json({ message: 'Assigned user not found' });
+//       }
+//       task.assignedTo = assignedTo;
+//     }
+
+//     // Save the updated task
+//     await task.save();
+//     res.status(200).json({ message: 'Task updated successfully', task });
+//   } catch (error) {
+//     console.error('Error updating task:', error);
+//     res.status(500).json({ message: 'Error updating task: ' + error.message });
+//   }
+// };
+
+export const updateTaskDetails = async (req, res) => {
+  try {
+      const { taskNumber } = req.params;
+      const { title, description, priority, status, assignedTo } = req.body;
+      const updatedTask = await Task.findOneAndUpdate(
+          { taskNumber },
+          { title, description, priority, status, ...(assignedTo && { assignedTo }) },
+          { new: true }
+      );
+      if (!updatedTask) {
+        return res.status(404).json({ error: 'Task not found' });
+      }
+      res.status(200).json(updatedTask);
+  } catch (error) {
+      console.error('Error updating task:', error);
+      res.status(500).json({ error: 'Failed to update task' });
   }
 };

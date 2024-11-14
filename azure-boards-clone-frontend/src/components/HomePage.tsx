@@ -1,4 +1,4 @@
-  import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../app/store';
 import CreateTaskModal from './CreateTaskModal';
@@ -24,6 +24,7 @@ const HomePage: React.FC = () => {
   const [showCreateTask, setShowCreateTask] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [priorityFilter, setPriorityFilter] = useState<string[]>([]);
+
 
   // Capture token from URL and set it in localStorage
   useEffect(() => {
@@ -63,9 +64,12 @@ const HomePage: React.FC = () => {
   };
 
   // Task click handler to select a task
-  const handleTaskClick = (taskId: string) => {
-    const task = tasks.find((t) => t._id === taskId);
-    setSelectedTask(task || null);
+  // const handleTaskClick = (taskNumber: string) => {
+  //   const task = tasks.find((t) => t._id === taskNumber);
+  //   setSelectedTask(task || null);
+  // };
+  const handleTaskClick = (taskNumber: number|undefined) => {
+    navigate(`/tasks/${taskNumber}`); // Redirect to TaskDetails page with task ID
   };
 
   // Handle filters
@@ -150,12 +154,12 @@ const HomePage: React.FC = () => {
         <Grid item xs={1}>
           <Typography>Task Number</Typography>
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={5}>
           <Typography>Title</Typography>
         </Grid>
-        <Grid item xs={3}>
+        {/* <Grid item xs={3}>
           <Typography>Description</Typography>
-        </Grid>
+        </Grid> */}
         <Grid item xs={2}>
           <Typography>Status</Typography>
         </Grid>
@@ -193,7 +197,7 @@ const HomePage: React.FC = () => {
               key={task._id}
               task={task}
               users={allUsers || []} // Use allUsers instead of just the logged-in user
-              onClick={() => handleTaskClick(task._id)}
+              onClick={() => handleTaskClick(task.taskNumber)}
               index={index + 1}
             />
           ))

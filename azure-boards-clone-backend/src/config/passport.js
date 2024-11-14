@@ -4,7 +4,7 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { User } from '../models/userModel.js';
 import { handleOAuthLogin } from '../controllers/userController.js';
 import dotenv from 'dotenv';
-
+//URL_UPDATE
 dotenv.config();
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
