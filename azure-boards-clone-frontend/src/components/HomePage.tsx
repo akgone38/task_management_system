@@ -6,7 +6,6 @@ import { Grid, Typography, Button, Box, Paper } from '@mui/material';
 import TaskCard from './TaskCard';
 import FilterBar from './FilterBar';
 import { fetchUserDetails, fetchAllUsers } from '../features/users/usersAPI';
-import { Task } from '../types/types';
 import { logout,setToken } from '../features/users/usersSlice';
 import { fetchTasksAsync } from '../features/tasks/tasksAPI';
 import { useNavigate,useLocation } from 'react-router-dom';
@@ -18,9 +17,6 @@ const HomePage: React.FC = () => {
 
   const { user, token, status, allUsers } = useSelector((state: RootState) => state.users);
   const tasks = useSelector((state: RootState) => state.tasks.tasks);
-  // const tasksStatus = useSelector((state: RootState) => state.tasks.status);
-  
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [showCreateTask, setShowCreateTask] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [priorityFilter, setPriorityFilter] = useState<string[]>([]);
@@ -62,12 +58,7 @@ const HomePage: React.FC = () => {
   const handleLoginRedirect = () => {
     navigate('/login');
   };
-
-  // Task click handler to select a task
-  // const handleTaskClick = (taskNumber: string) => {
-  //   const task = tasks.find((t) => t._id === taskNumber);
-  //   setSelectedTask(task || null);
-  // };
+  
   const handleTaskClick = (taskNumber: number|undefined) => {
     navigate(`/tasks/${taskNumber}`); // Redirect to TaskDetails page with task ID
   };
@@ -157,9 +148,6 @@ const HomePage: React.FC = () => {
         <Grid item xs={5}>
           <Typography>Title</Typography>
         </Grid>
-        {/* <Grid item xs={3}>
-          <Typography>Description</Typography>
-        </Grid> */}
         <Grid item xs={2}>
           <Typography>Status</Typography>
         </Grid>
@@ -171,25 +159,6 @@ const HomePage: React.FC = () => {
         </Grid>
       </Grid>
 
-      {/* <Box>
-        {tasksStatus === 'loading' ? (
-          <Typography>Loading tasks...</Typography>
-        ) : tasksStatus === 'failed' ? (
-          <Typography color="error">Failed to load tasks.</Typography>
-        ) : filteredTasks.length > 0 ? (
-          filteredTasks.map((task, index) => (
-            <TaskCard
-              key={task._id}
-              task={task}
-              users={allUsers || []}
-              onClick={() => handleTaskClick(task._id)}
-              index={index + 1}
-            />
-          ))
-        ) : (
-          <Typography>No tasks available for the selected filters.</Typography>
-        )}
-      </Box> */}
       <Box>
         {filteredTasks.length > 0 ? (
           filteredTasks.map((task, index) => (
@@ -208,57 +177,6 @@ const HomePage: React.FC = () => {
 
       {showCreateTask && (
         <CreateTaskModal onClose={() => setShowCreateTask(false)} users={allUsers || []} />
-      )}
-
-      {selectedTask && (
-        <Paper sx={{ padding: '20px', marginTop: '20px' }}>
-          <Grid container spacing={2}>
-            <Grid item xs={4}>
-              <Typography variant="h6">Title</Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <Typography variant="body1" noWrap sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                {selectedTask.title}
-              </Typography>
-            </Grid>
-
-            <Grid item xs={4}>
-              <Typography variant="h6">Description</Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <Typography variant="body1" noWrap sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                {selectedTask.description}
-              </Typography>
-            </Grid>
-
-            <Grid item xs={4}>
-              <Typography variant="h6">Priority</Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <Typography variant="body1" noWrap sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                {selectedTask.priority}
-              </Typography>
-            </Grid>
-
-            <Grid item xs={4}>
-              <Typography variant="h6">Assigned to</Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <Typography variant="body1" noWrap sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                {selectedTask.assignedTo || 'Unassigned'}
-              </Typography>
-            </Grid>
-
-            <Grid item xs={4}>
-              <Typography variant="h6">Created on</Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <Typography variant="body1" noWrap sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                {new Date(selectedTask.createdOn).toLocaleDateString()}
-              </Typography>
-            </Grid>
-          </Grid>
-        </Paper>
       )}
     </Box>
   );
